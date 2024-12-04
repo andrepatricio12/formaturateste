@@ -110,6 +110,7 @@
     </style>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAZzrttPeX60p_klInzVrL1qeQycYWhf48",
@@ -170,8 +171,6 @@
                 .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase())
                 .join(" ");
         }
-        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
 
         function login() {
@@ -228,23 +227,7 @@
 }
 
 
-        async function carregarConvidados() {
-            const doc = await db.collection('convidados').doc(matriculaAtual).get();
-            if (doc.exists) {
-                const data = doc.data();
-                const lista = document.getElementById('meus-convidados');
-                lista.innerHTML = '';
-                data.convidados.forEach(convidado => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        ${convidado.posto} - ${formatarNome(convidado.nome)} 
-                        <span class="delete-btn" onclick="removerConvidado(this)">Excluir</span>
-                    `;
-                    lista.appendChild(li);
-                });
-            }
-        }
-        async function carregarConvidados() {
+        aasync function carregarConvidados() {
     const doc = await db.collection('convidados').doc(matriculaAtual).get();
     if (doc.exists) {
         const data = doc.data();
@@ -252,7 +235,7 @@
         lista.innerHTML = '';
 
         // Atualiza o contador de convidados
-        contadorConvidados = data.numeroConvidados || 0;  // Usa o contador salvo no Firestore
+        contadorConvidados = data.numeroConvidados || 0;
         atualizarContador();
 
         data.convidados.forEach(convidado => {
@@ -487,11 +470,6 @@ function exportarJSON(reportData) {
         <div id="contador-convidados">Número de Convidados: 0</div> <!-- Exibição do contador -->
     </div>
     <div id="retaguarda" class="hidden">
-        <h2>Relatório de Convidados</h2>
-        <div id="convidados-report"></div>
-        <button onclick="ocultarRelatorio()">Ocultar Relatório</button>
-    </div>
-    <div id="retaguarda" class="hidden">
     <h2>Relatório de Convidados</h2>
     <div id="convidados-report"></div>
     <div style="margin-top: 20px; display: flex; gap: 10px;">
@@ -500,6 +478,8 @@ function exportarJSON(reportData) {
         <button onclick="exportarRelatorio('json')">Exportar JSON</button>
     </div>
     <button onclick="ocultarRelatorio()">Ocultar Relatório</button>
+</div>
+
 </div>
 
 </div>
