@@ -111,59 +111,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-</head>
-<body>
-<div class="container">
-    <h1>Controle de Convidados Militares</h1>
-    <!-- Formulário de Login -->
-    <div id="login-form">
-        <input type="text" id="matricula" placeholder="Digite sua matrícula" maxlength="8">
-        <button onclick="login()">Entrar</button>
-        <div id="login-error" class="error hidden">Matrícula não encontrada. Por favor, tente novamente.</div>
-    </div>
-
-    <!-- Formulário de Convidados -->
-    <div id="convidados-form" class="hidden">
-        <h2 id="aluno-nome"></h2>
-        <h3>Escolha seus convidados</h3>
-        <div class="form-group">
-            <label for="posto0">Posto/Graduação:</label>
-            <select id="posto0">
-                <option value="Sd">Sd</option>
-                <option value="Cb">Cb</option>
-                <option value="Sgt">Sgt</option>
-                <option value="ST">ST</option>
-                <option value="Ten">Ten</option>
-                <option value="CAP">CAP</option>
-                <option value="MAJ">MAJ</option>
-                <option value="TC">TC</option>
-                <option value="CEL">CEL</option>
-            </select>
-            <label for="nome0">Nome do Convidado:</label>
-            <input type="text" id="nome0" placeholder="Digite o nome">
-            <label for="acompanhante">Levará acompanhante?</label>
-            <input type="checkbox" id="acompanhante">
-        </div>
-        <button onclick="adicionarConvidado()">Adicionar Convidado</button>
-        <ul id="meus-convidados"></ul>
-        <button onclick="salvarConvidados()">Salvar</button>
-        <button onclick="gerarRetaguarda()">Exibir Relatório</button>
-        <div id="contador-convidados">Número de Convidados: 0</div>
-    </div>
-
-    <!-- Relatório de Convidados -->
-    <div id="retaguarda" class="hidden">
-        <h2>Relatório de Convidados</h2>
-        <div id="convidados-report"></div>
-        <div style="margin-top: 20px; display: flex; gap: 10px;">
-            <button onclick="exportarRelatorio('pdf')">Exportar PDF</button>
-            <button onclick="exportarRelatorio('csv')">Exportar CSV</button>
-            <button onclick="exportarRelatorio('json')">Exportar JSON</button>
-        </div>
-        <button onclick="ocultarRelatorio()">Ocultar Relatório</button>
-    </div>
-</div>
-<script>    <script>
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAZzrttPeX60p_klInzVrL1qeQycYWhf48",
             authDomain: "convites-7dd28.firebaseapp.com",
