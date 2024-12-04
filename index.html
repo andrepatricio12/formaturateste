@@ -227,7 +227,7 @@
 }
 
 
-        aasync function carregarConvidados() {
+        async function carregarConvidados() {
     const doc = await db.collection('convidados').doc(matriculaAtual).get();
     if (doc.exists) {
         const data = doc.data();
