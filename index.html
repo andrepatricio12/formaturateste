@@ -170,6 +170,9 @@
                 .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase())
                 .join(" ");
         }
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
 
         function login() {
             const matriculaInput = document.getElementById('matricula').value.trim();
@@ -368,6 +371,79 @@
         console.error("Erro ao atualizar Firestore:", error);
     }
 }
+        async function exportarRelatorio(formato) {
+    const snapshot = await db.collection('convidados').get();
+    if (snapshot.empty) {
+        alert("Nenhum dado disponível para exportação.");
+        return;
+    }
+
+    const reportData = {};
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        data.convidados.forEach(convidado => {
+            const key = `${convidado.posto} - ${formatarNome(convidado.nome)}`;
+            if (!reportData[key]) {
+                reportData[key] = { count: 0, convidadosPor: [] };
+            }
+            reportData[key].count++;
+            reportData[key].convidadosPor.push(data.aluno);
+        });
+    });
+
+    if (formato === 'pdf') {
+        exportarPDF(reportData);
+    } else if (formato === 'csv') {
+        exportarCSV(reportData);
+    } else if (formato === 'json') {
+        exportarJSON(reportData);
+    }
+}
+
+function exportarPDF(reportData) {
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text("Relatório de Convidados", 10, 10);
+
+    let y = 20;
+    for (const [convidado, info] of Object.entries(reportData)) {
+        doc.text(`${convidado}:`, 10, y);
+        doc.text(`- Quantidade de convites: ${info.count}`, 10, y + 10);
+        doc.text(`- Convidado por: ${info.convidadosPor.join(", ")}`, 10, y + 20);
+        y += 30;
+    }
+
+    doc.save("relatorio-convidados.pdf");
+}
+
+function exportarCSV(reportData) {
+    let csvContent = "data:text/csv;charset=utf-8,Convidado,Quantidade,Convidado Por\n";
+    for (const [convidado, info] of Object.entries(reportData)) {
+        const convidadosPor = info.convidadosPor.join(" | ");
+        csvContent += `${convidado},${info.count},"${convidadosPor}"\n`;
+    }
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "relatorio-convidados.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function exportarJSON(reportData) {
+    const jsonContent = JSON.stringify(reportData, null, 2);
+    const blob = new Blob([jsonContent], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "relatorio-convidados.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 
 
         function ocultarRelatorio() {
@@ -415,6 +491,17 @@
         <div id="convidados-report"></div>
         <button onclick="ocultarRelatorio()">Ocultar Relatório</button>
     </div>
+    <div id="retaguarda" class="hidden">
+    <h2>Relatório de Convidados</h2>
+    <div id="convidados-report"></div>
+    <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button onclick="exportarRelatorio('pdf')">Exportar PDF</button>
+        <button onclick="exportarRelatorio('csv')">Exportar CSV</button>
+        <button onclick="exportarRelatorio('json')">Exportar JSON</button>
+    </div>
+    <button onclick="ocultarRelatorio()">Ocultar Relatório</button>
+</div>
+
 </div>
 </body>
 </html>
